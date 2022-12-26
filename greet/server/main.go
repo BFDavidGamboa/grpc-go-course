@@ -1,3 +1,6 @@
+//go:build !test
+// +build !test
+
 package main
 
 import (
@@ -5,6 +8,7 @@ import (
 	"net"
 
 	pb "github.com/BFDavidGamboa/grpc-go-course/greet/proto"
+
 	"google.golang.org/grpc"
 )
 
@@ -16,16 +20,19 @@ type Server struct {
 
 func main() {
 	lis, err := net.Listen("tcp", addr)
+
 	if err != nil {
-		log.Fatalf("failed to listen on: %v\n", err)
+		log.Fatalf("failed to listen: %v\n", err)
 	}
 
-	log.Printf("Listen on %s\n", addr)
+	defer lis.Close()
+	log.Printf("Listening at %s\n", addr)
 
 	s := grpc.NewServer()
 	pb.RegisterGreetServiceServer(s, &Server{})
 
-	if err = s.Serve(lis); err != nil {
-		log.Fatalf("Failed to serve %v\n", err)
+	defer s.Stop()
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v\n", err)
 	}
 }
