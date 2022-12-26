@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.12
-// source: greet/proto/greet.proto
+// source: greet.proto
 
-package grpc_go_course
+package proto
 
 import (
 	context "context"
@@ -101,5 +101,5 @@ var GreetService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "greet/proto/greet.proto",
+	Metadata: "greet.proto",
 }
