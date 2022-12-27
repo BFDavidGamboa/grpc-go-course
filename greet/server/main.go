@@ -11,6 +11,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
 )
 
 var addr string = "0.0.0.0:50051"
@@ -49,6 +50,8 @@ func main() {
 	pb.RegisterGreetServiceServer(s, &Server{})
 
 	defer s.Stop()
+
+	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v\n", err)
 	}
