@@ -69,3 +69,56 @@ make all
 - bump: Update packages version
 - about: Display info related to the build
 - help: Show this help
+
+### Server Reflections
+
+For the development side of the API, we can enable server reflection making use of evans libraries. This allows us to easily:
+
+- Manually gRPC API inspection
+- To automate some tasks by scripting
+
+For its installation if you are using homebrew just run:
+
+```bash
+brew tap ktr0731/evans
+```
+
+```bash
+brew install evans
+```
+
+Once installed initialized to start an evans instance, you can use the following command:
+
+```bash
+evans --host localhost --port 50051 --reflection repl
+```
+
+to view packages inside de CLI use:
+
+```bash
+show package
+```
+
+to view messages inside de CLI use:
+
+```bash
+show messages
+```
+
+to view services in use
+
+```bash
+show service
+```
+
+to make calls inside a service
+
+```bash
+service {service_name}
+```
+
+inside the service use the following command to make the calls:  
+
+```bash
+call {rpc_call_name}
+```
