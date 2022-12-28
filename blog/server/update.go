@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	pb "github.com/BFDavidGamboa/grpc-go-course/blog/proto"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -30,11 +30,24 @@ func (s *Server) UpdateBlog(ctx context.Context, in *pb.Blog) (*emptypb.Empty, e
 		Content:  in.Content,
 	}
 
-	fmt.Println(data, oid)
+	res, err := collection.UpdateOne(
+		ctx,
+		bson.M{"_id": oid},
+		bson.M{"$set": data},
+	)
 
-	// res, err := collection.UpdateOne(
-	// 	ctx,
-	// 	bson.M
-	// )
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			"Could not update blog item")
+	}
+
+	if res.MatchedCount == 0 {
+		return nil, status.Errorf(
+			codes.NotFound,
+			"Cannot find blog with Id",
+		)
+	}
+
 	return &emptypb.Empty{}, nil
 }

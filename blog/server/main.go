@@ -57,7 +57,6 @@ func main() {
 	pb.RegisterBlogServiceServer(s, &Server{})
 
 	defer s.Stop()
-
 	reflection.Register(s)
 
 	if err := s.Serve(lis); err != nil {
