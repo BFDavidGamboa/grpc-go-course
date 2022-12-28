@@ -9,6 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
 )
 
 var collection *mongo.Collection
@@ -27,6 +29,7 @@ func main() {
 		log.Fatalf("Error received when trying to connect with Mongo %v\n", err)
 	}
 
+	collection = client.Database("blogdb").Collection("blog")
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("error listening on %s: %v", addr, err)
@@ -34,10 +37,28 @@ func main() {
 
 	log.Printf("Listening at %s\n", addr)
 
-	// opts := []grpc.ServerOption{}
+	opts := []grpc.ServerOption{}
 
-	s := grpc.NewServer()
+	tsl := true // change that to false if needed
+
+	if tsl {
+		certFile := "ssl/server.crt"
+		keyFile := "ssl/server.pem"
+		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+
+		if err != nil {
+			log.Fatalf("Failed loading certificates: %v\n", err)
+		}
+
+		opts = append(opts, grpc.Creds(creds))
+	}
+
+	s := grpc.NewServer(opts...)
 	pb.RegisterBlogServiceServer(s, &Server{})
+
+	defer s.Stop()
+
+	reflection.Register(s)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
