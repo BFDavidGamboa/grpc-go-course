@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func doSqrt(c pb.CalculatorServiceClient, n int32) {
+func doSqrt(c pb.CalculatorServiceClient, n float64) {
 	log.Println("doSqrt was invoked")
 	res, err := c.Sqrt(context.Background(), &pb.SqrtRequest{Number: n})
 
@@ -29,7 +29,6 @@ func doSqrt(c pb.CalculatorServiceClient, n int32) {
 			log.Fatalf("A non gRPC error: %v\n", err)
 		}
 	}
-
-	log.Printf("Sqrt: %f\n", res.Result)
+	log.Printf("Sqrt: %g\n", res.Result)
 
 }
