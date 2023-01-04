@@ -5,7 +5,7 @@ package calculator;
 option go_package = "github.com/BFDavidGamboa/grpc-go-course/calculator/proto";
 
 message SqrtRequest {
-  int32 number = 1;
+  double number = 1;
 }
   
 message SqrtResponse {
